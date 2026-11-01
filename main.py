@@ -16,7 +16,14 @@
 # Code solution by Sammy,
 # references: https://docs.python.org/3/library/sqlite3.html,
 #             https://www.sqlitetutorial.net/sqlite-update/
+#             https://docs.python.org/3/tutorial/classes.html
+#             https://stackoverflow.com/questions/11479816/what-is-the-python-equivalent-for-a-case-switch-statement
 import sqlite3
+
+class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
 
 def promptName():
     """
@@ -48,15 +55,14 @@ def promptAge():
 
     return age
 
-def storeUser(con, cur, name, age):
+def storeUser(con, cur, user):
     """
         Stores the user in a database in O(1).
         Inputs: con - connection object to the database.
                 cur - database cursor object.
-                name - string representation of the user's name.
-                age - string representation of the user's age.
+                user - the Person object being stored.
     """
-    cur.execute(f"INSERT INTO user VALUES ('{name}', {age})")
+    cur.execute(f"INSERT INTO user VALUES ('{user.name}', {user.age})")
     con.commit()
 
 def getUser(cur, name):
@@ -95,17 +101,16 @@ def getAllUsers(cur):
     res = cur.fetchall()
     print(res)
 
-def modifyUser(con, cur, user, newName, newAge):
+def modifyUser(con, cur, user, newUser):
     """
         Modify's the given user's name and age in O(1).
         Inputs: con - connection to the database.
                 cur - database cursor object.
                 user - string representation of the user's name.
-                newName - string representation of the user's new name.
-                newAge - string representation of the user's new age.
+                newUser - Person object for the new user.
     """
     db_entry = cur.execute(f"SELECT name, age FROM user WHERE name='{user}'")
-    cur.execute(f"UPDATE user SET name='{newName}', age='{newAge}'")
+    cur.execute(f"UPDATE user SET name='{newUser.name}', age='{newUser.age}'")
     con.commit()
 
 def main():
@@ -122,24 +127,29 @@ def main():
     print("2) Get an existing user")
     print("3) Remove an existing user")
     print("4) Edit an existing user")
-    userChoice = input("Select: ")
-    if (userChoice == '1'):
-        name = promptName()
-        age = promptAge()
-        storeUser(con, cur, name, age)
-    elif (userChoice == '2'):
-        name = promptName()
-        print(getUser(cur, name))
-    elif (userChoice == '3'):
-        name = input("Enter a name: ")
-        removeUser(con, cur, name)
-    elif (userChoice == '4'):
-        print("Which user would you like to edit?")
-        getAllUsers(cur)
-        user = input("Enter a name: ")  # lookup user by name
-        newName = input("Enter a new name: ")
-        newAge = input("Enter a new age: ")
-        modifyUser(con, cur, user, newName, newAge)
+    userChoice = input("Choose: ")
+
+    # ------ Handle Input ------
+    match userChoice:
+        case '1':
+            name = promptName()
+            age = promptAge()
+            newUser = Person(name, age)
+            storeUser(con, cur, newUser)
+        case '2':
+            name = promptName()
+            print(getUser(cur, name))
+        case '3':
+            name = promptName()
+            removeUser(con, cur, name)
+        case '4':
+            print("Which user would you like to edit?")
+            getAllUsers(cur)
+            user = input("Enter a name: ")  # lookup user by name
+            newName = input("Enter a new name: ")
+            newAge = input("Enter a new age: ")
+            newUser = Person(newName, newAge)
+            modifyUser(con, cur, user, newUser)
 
 if __name__ == "__main__":
     main()
