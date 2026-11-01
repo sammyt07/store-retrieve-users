@@ -13,7 +13,8 @@
 # storeUser - store user's name and age in SQLite
 # getUser - get a user by their name from SQLite
 
-# Code solution by Sammy:
+# Code solution by Sammy,
+# references: https://docs.python.org/3/library/sqlite3.html
 import sqlite3
 
 def promptName():
