@@ -10,4 +10,5 @@ This is a simple Python, SQLite script that creates a database table, prompts th
 git clone https://github.com/sammyt07/store-retrieve-users.git
 cd store-retrieve-users
 ```
-2) Then, type `python main.py`
+2) If you're on Windows, then type `python main.py`
+3) If you're on MacOS, then type `python3 main.py`
